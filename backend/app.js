@@ -9,6 +9,7 @@ const baseConfig = {
   database: process.env.DB_NAME || "postgres",
   user: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "postgres",
+  ssl: { rejectUnauthorized: false }
 };
 
 const server = http.createServer(async (req, res) => {
@@ -39,7 +40,7 @@ const server = http.createServer(async (req, res) => {
     res.statusCode = 500;
     res.end(`Connection to DB at ${path} failed`);
   } finally {
-    await client.end().catch(() => {});
+    await client.end().catch(() => { });
   }
 });
 
