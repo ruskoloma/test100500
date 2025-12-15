@@ -1,28 +1,31 @@
-data "aws_ami" "amzn_linx_lts" {
+data "aws_ami" "ubuntu_22_04_arm" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["al2023-ami-*-arm64"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-arm64-server-*"]
   }
 
-  owners = ["137112412989"]
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
 }
 
 resource "aws_instance" "main" {
-  ami                    = data.aws_ami.amzn_linx_lts.id
+  ami                    = data.aws_ami.ubuntu_22_04_arm.id
   instance_type          = "t4g.micro"
   key_name               = "tesetkey"
   vpc_security_group_ids = [aws_security_group.main_instance_sg.id]
   subnet_id              = values(aws_subnet.public)[0].id
   user_data              = <<-EOF
 #!/bin/bash
-sudo yum install -y git docker
-sudo yum update -y
-systemctl start docker
-systemctl enable docker
-git clone https://github.com/ruskoloma/test100500.git /home/ec2-user/app
-cd /home/ec2-user/app
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh ./get-docker.sh
+git clone https://github.com/ruskoloma/test100500.git /app
+cd /app
 docker compose up -d
 EOF
 }

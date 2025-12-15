@@ -13,7 +13,7 @@ variable "db_username" {
 variable "db_password" {
   description = "I KNOW, SHOULD BE AT LEAST IN SECRET MANAGER, BUT FOR DEMO PURPOSES..."
   type        = string
-  default     = "IAmSuperSecret!"
+  default     = "postgres"
 }
 
 variable "db_identifier" {
@@ -70,6 +70,6 @@ resource "aws_security_group" "main_db_sg" {
   }
 }
 
-output "db_ip_address" {
+output "db_address" {
   value = aws_db_instance.main.address
 }
