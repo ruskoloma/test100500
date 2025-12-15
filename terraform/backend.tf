@@ -17,7 +17,6 @@ data "aws_ami" "ubuntu_22_04_arm" {
 resource "aws_instance" "main" {
   ami                    = data.aws_ami.ubuntu_22_04_arm.id
   instance_type          = "t4g.micro"
-  key_name               = "tesetkey"
   vpc_security_group_ids = [aws_security_group.main_instance_sg.id]
   subnet_id              = values(aws_subnet.public)[0].id
   user_data              = <<-EOF
